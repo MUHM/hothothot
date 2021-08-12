@@ -27,7 +27,7 @@ type (
 	SysSettingsModel interface {
 		Insert(data SysSettings) (sql.Result, error)
 		FindOne(id int64) (*SysSettings, error)
-		FindOneByName(name sql.NullInt64) (*SysSettings, error)
+		FindOneByName(name string) (*SysSettings, error)
 		Update(data SysSettings) error
 		Delete(id int64) error
 	}
@@ -38,12 +38,12 @@ type (
 	}
 
 	SysSettings struct {
-		Id         int64         `db:"id"`       // 编号
-		Name       sql.NullInt64 `db:"name"`     // 分类
-		Classify   sql.NullInt64 `db:"classify"` // 分类
-		Content    string        `db:"content"`  // 内容
-		CreateTime time.Time     `db:"create_time"`
-		UpdateTime time.Time     `db:"update_time"`
+		Id         int64     `db:"id"`       // 编号
+		Name       string    `db:"name"`     // 分类
+		Classify   int64     `db:"classify"` // 分类
+		Content    string    `db:"content"`  // 内容
+		CreateTime time.Time `db:"create_time"`
+		UpdateTime time.Time `db:"update_time"`
 	}
 )
 
@@ -80,7 +80,7 @@ func (m *defaultSysSettingsModel) FindOne(id int64) (*SysSettings, error) {
 	}
 }
 
-func (m *defaultSysSettingsModel) FindOneByName(name sql.NullInt64) (*SysSettings, error) {
+func (m *defaultSysSettingsModel) FindOneByName(name string) (*SysSettings, error) {
 	sysSettingsNameKey := fmt.Sprintf("%s%v", cacheSysSettingsNamePrefix, name)
 	var resp SysSettings
 	err := m.QueryRowIndex(&resp, sysSettingsNameKey, m.formatPrimary, func(conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {

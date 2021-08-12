@@ -3,7 +3,7 @@ syntax = "proto3";
 package system;
 
 message nameReq{
-  int64 classify=1;
+  string name = 1;
 }
 
 message nameResp {

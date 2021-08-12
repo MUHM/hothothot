@@ -24,7 +24,13 @@ func NewGetByNameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetByNa
 }
 
 func (l *GetByNameLogic) GetByName(in *system.NameReq) (*system.NameResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &system.NameResp{}, nil
+	one, err := l.svcCtx.SysSettingsModel.FindOneByName(in.Name)
+	if err != nil {
+		return nil, err
+	}
+	return &system.NameResp{
+		Id:       (*one).Id,
+		Classify: (*one).Classify,
+		Content:  (*one).Content,
+	}, nil
 }
