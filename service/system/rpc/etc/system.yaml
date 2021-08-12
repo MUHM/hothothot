@@ -1,0 +1,20 @@
+Name: system.rpc
+ListenOn: 127.0.0.1:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: system.rpc
+Auth: true
+Timeout: 5000
+Redis:
+    Host: 10.10.1.9:6379
+    Type: node
+    Pass: PMcJoBbNnX5qzQ
+    Key: rpc:system # hash存储,手动初始化
+StrictControl: true
+Mysql:
+  DataSource: hot:tokyo@tcp(10.10.1.9:3306)/hothothot?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 10.10.1.9:6379
+    Pass: PMcJoBbNnX5qzQ
+    Type: node

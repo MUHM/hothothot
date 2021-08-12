@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package system;
+
+message nameReq{
+  int64 classify=1;
+}
+
+message nameResp {
+  int64 id = 1;
+  string name = 2;
+  int64 classify = 3;
+  string content = 4;
+}
+
+service system {
+  rpc getByName(nameReq) returns(nameResp);
+}
