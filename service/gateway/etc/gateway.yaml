@@ -1,0 +1,27 @@
+Name: gateway
+Host: 0.0.0.0
+Port: 8888
+Mysql:
+  DataSource: hot:tokyo@tcp(10.10.1.9:3306)/hothothot?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 10.10.1.9:6379
+    Pass: PMcJoBbNnX5qzQ
+    Type: node
+Timeout: 30000
+Auth:
+  AccessSecret: 123dkf1229czd223hads91
+  AccessExpire: 36000
+SystemRpc: #调用system.rpc配置授权
+  Etcd:
+    Hosts:
+      - 10.10.1.9:2379
+    Key: system.rpc
+  App: gateway
+  Token: System2021!
+UserRpc: #user.rpc配置授权
+  Etcd:
+    Hosts:
+      - 10.10.1.9:2379
+    Key: user.rpc
+  App: gateway
+  Token: System2021!

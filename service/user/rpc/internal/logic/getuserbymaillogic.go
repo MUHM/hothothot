@@ -9,22 +9,22 @@ import (
 	"github.com/tal-tech/go-zero/core/logx"
 )
 
-type GetUserLogic struct {
+type GetUserByMailLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUserLogic {
-	return &GetUserLogic{
+func NewGetUserByMailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUserByMailLogic {
+	return &GetUserByMailLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetUserLogic) GetUser(in *user.IdReq) (*user.UserInfoReply, error) {
-	one, err := l.svcCtx.UserModel.FindOne(in.Id)
+func (l *GetUserByMailLogic) GetUserByMail(in *user.MailReq) (*user.UserInfoReply, error) {
+	one, err := l.svcCtx.UserModel.FindOneByUsername(in.Mail)
 	if err != nil {
 		return nil, err
 	}
@@ -34,5 +34,7 @@ func (l *GetUserLogic) GetUser(in *user.IdReq) (*user.UserInfoReply, error) {
 		Username: one.Username,
 		Nickname: one.Nickname,
 		Gender:   one.Gender,
+		Password: one.Password,
+		Mail:     one.Mail,
 	}, nil
 }

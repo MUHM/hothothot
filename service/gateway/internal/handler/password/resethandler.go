@@ -3,23 +3,23 @@ package handler
 import (
 	"net/http"
 
-	"hothothot/service/user/api/internal/logic"
-	"hothothot/service/user/api/internal/svc"
-	"hothothot/service/user/api/internal/types"
+	"hothothot/service/gateway/internal/logic/password"
+	"hothothot/service/gateway/internal/svc"
+	"hothothot/service/gateway/internal/types"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
-func loginHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func ResetHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.LoginReq
+		var req types.PwdResetReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := logic.NewLoginLogic(r.Context(), ctx)
-		resp, err := l.Login(req)
+		l := logic.NewResetLogic(r.Context(), ctx)
+		resp, err := l.Reset(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

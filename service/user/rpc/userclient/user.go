@@ -15,10 +15,14 @@ import (
 
 type (
 	IdReq         = user.IdReq
+	NameReq       = user.NameReq
+	MailReq       = user.MailReq
 	UserInfoReply = user.UserInfoReply
 
 	User interface {
-		GetUser(ctx context.Context, in *IdReq) (*UserInfoReply, error)
+		GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error)
+		GetUserByName(ctx context.Context, in *NameReq) (*UserInfoReply, error)
+		GetUserByMail(ctx context.Context, in *MailReq) (*UserInfoReply, error)
 	}
 
 	defaultUser struct {
@@ -32,7 +36,17 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
-func (m *defaultUser) GetUser(ctx context.Context, in *IdReq) (*UserInfoReply, error) {
+func (m *defaultUser) GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
-	return client.GetUser(ctx, in)
+	return client.GetUserById(ctx, in)
+}
+
+func (m *defaultUser) GetUserByName(ctx context.Context, in *NameReq) (*UserInfoReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetUserByName(ctx, in)
+}
+
+func (m *defaultUser) GetUserByMail(ctx context.Context, in *MailReq) (*UserInfoReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetUserByMail(ctx, in)
 }

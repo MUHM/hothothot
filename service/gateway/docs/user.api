@@ -1,0 +1,82 @@
+type (
+	LoginReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	LoginResp {
+		Id           int64  `json:"id"`
+		Username     string `json:"username"`
+		Nickname     string `json:"nickname"`
+		Mail         string `json:"mail"`
+		Gender       string `json:"gender"`
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+
+	PwdResetCodeReq {
+		Username string `json:"username"`
+	}
+
+	PwdResetCodeResp {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+
+	PwdResetReq {
+		Username        string `json:"username"`
+		NewPassword     string `json:"newPassword"`
+		ComparePassword string `json:"comparePassword"`
+		ResetCode       string `json:"resetCode"`
+	}
+
+	PwdResetResp {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+
+	PwdChangeReq {
+		Password        string `json:"password"`
+		NewPassword     string `json:"newPassword"`
+		ComparePassword string `json:"comparePassword"`
+	}
+	PwdChangeResp {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+)
+
+@server(
+	group: user
+)
+service gateway {
+	@handler login
+	post /api/user/login (LoginReq) returns (LoginResp)
+}
+
+@server(
+	group: password
+)
+service gateway {
+	@handler resetCode
+	post /api/password/resetcode (PwdResetCodeReq) returns (PwdResetCodeResp)
+}
+
+@server(
+	group: password
+)
+service gateway {
+	@handler reset
+	post /api/password/reset (PwdResetReq) returns (PwdResetResp)
+}
+
+@server(
+	jwt:   Auth
+	group: password
+	// middleware: CasbinRbac
+)
+service gateway {
+	@handler change
+	post /api/password/change (PwdChangeReq) returns (PwdChangeResp)
+}

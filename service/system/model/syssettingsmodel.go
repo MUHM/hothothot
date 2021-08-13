@@ -19,8 +19,8 @@ var (
 	sysSettingsRowsExpectAutoSet   = strings.Join(stringx.Remove(sysSettingsFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	sysSettingsRowsWithPlaceHolder = strings.Join(stringx.Remove(sysSettingsFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheSysSettingsIdPrefix   = "cache:sysSettings:id:"
-	cacheSysSettingsNamePrefix = "cache:sysSettings:name:"
+	cacheSysSettingsIdPrefix   = "cache#sysSettings#id#"
+	cacheSysSettingsNamePrefix = "cache#sysSettings#name#"
 )
 
 type (
@@ -38,12 +38,12 @@ type (
 	}
 
 	SysSettings struct {
-		Id         int64     `db:"id"`       // 编号
-		Name       string    `db:"name"`     // 分类
-		Classify   int64     `db:"classify"` // 分类
-		Content    string    `db:"content"`  // 内容
-		CreateTime time.Time `db:"create_time"`
-		UpdateTime time.Time `db:"update_time"`
+		Id        int64     `db:"id"`       // 编号
+		Name      string    `db:"name"`     // 分类
+		Classify  int64     `db:"classify"` // 分类
+		Content   string    `db:"content"`  // 内容
+		CreatedAt time.Time `db:"created_at"`
+		UpdatedAt time.Time `db:"updated_at"`
 	}
 )
 
@@ -57,8 +57,8 @@ func NewSysSettingsModel(conn sqlx.SqlConn, c cache.CacheConf) SysSettingsModel 
 func (m *defaultSysSettingsModel) Insert(data SysSettings) (sql.Result, error) {
 	sysSettingsNameKey := fmt.Sprintf("%s%v", cacheSysSettingsNamePrefix, data.Name)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, sysSettingsRowsExpectAutoSet)
-		return conn.Exec(query, data.Name, data.Classify, data.Content)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, sysSettingsRowsExpectAutoSet)
+		return conn.Exec(query, data.Name, data.Classify, data.Content, data.CreatedAt, data.UpdatedAt)
 	}, sysSettingsNameKey)
 	return ret, err
 }
@@ -105,7 +105,7 @@ func (m *defaultSysSettingsModel) Update(data SysSettings) error {
 	sysSettingsNameKey := fmt.Sprintf("%s%v", cacheSysSettingsNamePrefix, data.Name)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, sysSettingsRowsWithPlaceHolder)
-		return conn.Exec(query, data.Name, data.Classify, data.Content, data.Id)
+		return conn.Exec(query, data.Name, data.Classify, data.Content, data.CreatedAt, data.UpdatedAt, data.Id)
 	}, sysSettingsIdKey, sysSettingsNameKey)
 	return err
 }

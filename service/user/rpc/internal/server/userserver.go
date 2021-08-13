@@ -21,7 +21,17 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) GetUser(ctx context.Context, in *user.IdReq) (*user.UserInfoReply, error) {
-	l := logic.NewGetUserLogic(ctx, s.svcCtx)
-	return l.GetUser(in)
+func (s *UserServer) GetUserById(ctx context.Context, in *user.IdReq) (*user.UserInfoReply, error) {
+	l := logic.NewGetUserByIdLogic(ctx, s.svcCtx)
+	return l.GetUserById(in)
+}
+
+func (s *UserServer) GetUserByName(ctx context.Context, in *user.NameReq) (*user.UserInfoReply, error) {
+	l := logic.NewGetUserByNameLogic(ctx, s.svcCtx)
+	return l.GetUserByName(in)
+}
+
+func (s *UserServer) GetUserByMail(ctx context.Context, in *user.MailReq) (*user.UserInfoReply, error) {
+	l := logic.NewGetUserByMailLogic(ctx, s.svcCtx)
+	return l.GetUserByMail(in)
 }

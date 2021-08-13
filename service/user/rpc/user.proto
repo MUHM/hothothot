@@ -6,13 +6,25 @@ message IdReq{
   int64 id = 1;
 }
 
+message NameReq{
+  string name = 1;
+}
+
+message MailReq{
+  string mail = 1;
+}
+
 message UserInfoReply{
   int64 id = 1;
   string username = 2;
   string nickname = 3;
   string gender = 4;
+  string mail =5;
+  string password =6;
 }
 
 service user {
-  rpc getUser(IdReq) returns(UserInfoReply);
+  rpc getUserById(IdReq) returns(UserInfoReply);
+  rpc getUserByName(NameReq) returns(UserInfoReply);
+  rpc getUserByMail(MailReq) returns(UserInfoReply);
 }
