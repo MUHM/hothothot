@@ -34,10 +34,9 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
 	userInfo, err := l.svcCtx.UserRpc.GetUserByName(l.ctx, &userclient.NameReq{Name: req.Username})
-	passwordConfigStr, _ := l.svcCtx.SystemRpc.GetByName(l.ctx, &systemclient.NameReq{Name: "password"})
-	passwordConfigJson, _ := json.Marshal(&passwordConfigStr)
+	passwordSetting, _ := l.svcCtx.SystemRpc.GetByName(l.ctx, &systemclient.NameReq{Name: "password"})
 	var passwordConfig baseTypes.PasswordConfig
-	json.Unmarshal(passwordConfigJson, &passwordConfig)
+	json.Unmarshal([]byte(passwordSetting.Content), &passwordConfig)
 	if err != nil {
 		return nil, errorx.NewDefaultError(err.Error())
 	}

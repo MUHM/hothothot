@@ -13,7 +13,7 @@ Redis:
   Key: rpc:user
 StrictControl: true
 Mysql:
-  DataSource: root:121418@tcp(10.10.1.9:3306)/hothothot?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: hot:tokyo@tcp(10.10.1.9:3306)/hothothot?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheRedis:
   - Host: 10.10.1.9:6379
     Pass: PMcJoBbNnX5qzQ

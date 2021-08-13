@@ -19,8 +19,8 @@ var (
 	sysSettingsRowsExpectAutoSet   = strings.Join(stringx.Remove(sysSettingsFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	sysSettingsRowsWithPlaceHolder = strings.Join(stringx.Remove(sysSettingsFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
 
-	cacheSysSettingsIdPrefix   = "cache#sysSettings#id#"
-	cacheSysSettingsNamePrefix = "cache#sysSettings#name#"
+	cacheSysSettingsIdPrefix   = "cache:sysSettings:id:"
+	cacheSysSettingsNamePrefix = "cache:sysSettings:name:"
 )
 
 type (

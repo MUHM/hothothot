@@ -1,0 +1,56 @@
+{
+  // 使用 IntelliSense 了解相关属性。 
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "gateway api",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/service/gateway/gateway.go",
+      "env": {},
+      "args": [
+        "-f",
+        "./etc/gateway.yaml"
+      ]
+    },
+    {
+      "name": "user rpc",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/service/user/rpc/user.go",
+      "env": {},
+      "args": [
+        "-f",
+        "./etc/user.yaml"
+      ]
+    },
+    {
+      "name": "system rpc",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/service/system/rpc/system.go",
+      "env": {},
+      "args": [
+        "-f",
+        "./etc/system.yaml"
+      ]
+    },
+    {
+      "name": "crawler rpc",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/service/crawler/rpc/crawler.go",
+      "env": {},
+      "args": [
+        "-f",
+        "./etc/crawler.yaml"
+      ]
+    }
+  ]
+}
