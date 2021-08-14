@@ -29,7 +29,7 @@ func NewRunZhiHuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RunZhiHu
 	}
 }
 
-func (l *RunZhiHuLogic) RunZhiHu(in *crawler.ZhiHuReq) (*crawler.ZhiHuResp, error) {
+func (l *RunZhiHuLogic) RunZhiHu(in *crawler.ZhiHuReq) (*crawler.ZhiHuNoResp, error) {
 	// todo: add your logic here and delete this line
 
 	zhihuSettings, _ := l.svcCtx.SystemRpc.GetByName(l.ctx, &systemclient.NameReq{Name: "crawler_zhihu"})
@@ -51,5 +51,5 @@ func (l *RunZhiHuLogic) RunZhiHu(in *crawler.ZhiHuReq) (*crawler.ZhiHuResp, erro
 	}
 	// var result types.ZhihuResponse
 	// json.Unmarshal(httpRes.Body(), &result)
-	return &crawler.ZhiHuResp{}, nil
+	return &crawler.ZhiHuNoResp{}, nil
 }

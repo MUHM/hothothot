@@ -2,17 +2,29 @@ syntax = "proto3";
 
 package crawler;
 
+
+message WeatherReq{
+// int64 ping= 1;
+}
+
+message WeatherResp{
+// int64 result= 1;
+}
+message WeatherNoResp{
+// int64 result= 1;
+}
 message ZhiHuReq{
-  // int64 ping= 1;
+// int64 ping= 1;
 }
 
 message ZhiHuResp{
-  // int64 result= 1;
+// int64 result= 1;
 }
 message ZhiHuNoResp{
-  // int64 result= 1;
+// int64 result= 1;
 }
 
 service crawler {
-  rpc runZhiHu(ZhiHuReq) returns(ZhiHuResp);
+  rpc runZhiHu(ZhiHuReq) returns(ZhiHuNoResp);
+  rpc runWeather(WeatherReq) returns(WeatherNoResp);
 }

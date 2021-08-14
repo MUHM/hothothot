@@ -2,6 +2,8 @@ type (
 	LoginReq {
 		Username string `json:"username"`
 		Password string `json:"password"`
+		Captcha   string `json:"captcha"`
+		CaptchaId string `json:"captchaId"`
 	}
 
 	LoginResp {

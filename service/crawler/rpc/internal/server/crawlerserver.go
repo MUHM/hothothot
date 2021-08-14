@@ -21,7 +21,12 @@ func NewCrawlerServer(svcCtx *svc.ServiceContext) *CrawlerServer {
 	}
 }
 
-func (s *CrawlerServer) RunZhiHu(ctx context.Context, in *crawler.ZhiHuReq) (*crawler.ZhiHuResp, error) {
+func (s *CrawlerServer) RunZhiHu(ctx context.Context, in *crawler.ZhiHuReq) (*crawler.ZhiHuNoResp, error) {
 	l := logic.NewRunZhiHuLogic(ctx, s.svcCtx)
 	return l.RunZhiHu(in)
+}
+
+func (s *CrawlerServer) RunWeather(ctx context.Context, in *crawler.WeatherReq) (*crawler.WeatherNoResp, error) {
+	l := logic.NewRunWeatherLogic(ctx, s.svcCtx)
+	return l.RunWeather(in)
 }

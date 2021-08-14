@@ -14,12 +14,16 @@ import (
 )
 
 type (
-	ZhiHuReq    = crawler.ZhiHuReq
-	ZhiHuResp   = crawler.ZhiHuResp
-	ZhiHuNoResp = crawler.ZhiHuNoResp
+	WeatherReq    = crawler.WeatherReq
+	WeatherResp   = crawler.WeatherResp
+	WeatherNoResp = crawler.WeatherNoResp
+	ZhiHuReq      = crawler.ZhiHuReq
+	ZhiHuResp     = crawler.ZhiHuResp
+	ZhiHuNoResp   = crawler.ZhiHuNoResp
 
 	Crawler interface {
-		RunZhiHu(ctx context.Context, in *ZhiHuReq) (*ZhiHuResp, error)
+		RunZhiHu(ctx context.Context, in *ZhiHuReq) (*ZhiHuNoResp, error)
+		RunWeather(ctx context.Context, in *WeatherReq) (*WeatherNoResp, error)
 	}
 
 	defaultCrawler struct {
@@ -33,7 +37,12 @@ func NewCrawler(cli zrpc.Client) Crawler {
 	}
 }
 
-func (m *defaultCrawler) RunZhiHu(ctx context.Context, in *ZhiHuReq) (*ZhiHuResp, error) {
+func (m *defaultCrawler) RunZhiHu(ctx context.Context, in *ZhiHuReq) (*ZhiHuNoResp, error) {
 	client := crawler.NewCrawlerClient(m.cli.Conn())
 	return client.RunZhiHu(ctx, in)
+}
+
+func (m *defaultCrawler) RunWeather(ctx context.Context, in *WeatherReq) (*WeatherNoResp, error) {
+	client := crawler.NewCrawlerClient(m.cli.Conn())
+	return client.RunWeather(ctx, in)
 }
