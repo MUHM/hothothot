@@ -2,5 +2,12 @@ Name: crawler.rpc
 ListenOn: 127.0.0.1:8082
 Etcd:
   Hosts:
-    - 127.0.0.1:2379
+    - 10.10.1.9:2379
   Key: crawler.rpc
+SystemRpc: #调用system.rpc配置授权
+  Etcd:
+    Hosts:
+      - 10.10.1.9:2379
+    Key: system.rpc
+  App: gateway
+  Token: System2021!
