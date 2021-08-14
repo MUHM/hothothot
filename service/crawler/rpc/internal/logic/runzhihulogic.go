@@ -6,9 +6,9 @@ import (
 	"errors"
 	"time"
 
-	baseTypes "hothothot/common/types"
 	"hothothot/service/crawler/rpc/crawler"
 	"hothothot/service/crawler/rpc/internal/svc"
+	"hothothot/service/crawler/rpc/internal/types"
 	"hothothot/service/system/rpc/systemclient"
 
 	"github.com/tal-tech/go-zero/core/logx"
@@ -33,7 +33,7 @@ func (l *RunZhiHuLogic) RunZhiHu(in *crawler.ZhiHuReq) (*crawler.ZhiHuResp, erro
 	// todo: add your logic here and delete this line
 
 	zhihuSettings, _ := l.svcCtx.SystemRpc.GetByName(l.ctx, &systemclient.NameReq{Name: "crawler_zhihu"})
-	var crawlerZhihu baseTypes.CrawlerZhihu
+	var crawlerZhihu types.CrawlerZhihu
 	json.Unmarshal([]byte(zhihuSettings.Content), &crawlerZhihu)
 	client := fasthttp.Client{}
 	httpReq := fasthttp.AcquireRequest()
