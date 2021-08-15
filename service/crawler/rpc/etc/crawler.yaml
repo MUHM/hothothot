@@ -9,5 +9,5 @@ SystemRpc: #调用system.rpc配置授权
     Hosts:
       - 10.10.1.9:2379
     Key: system.rpc
-  App: gateway
+  App: crawler
   Token: System2021!
