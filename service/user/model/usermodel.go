@@ -32,6 +32,7 @@ type (
 		FindOneByUsername(username string) (*User, error)
 		Update(data User) error
 		Delete(id int64) error
+		SaveOtpSecret(id int64, secret string) error
 	}
 
 	defaultUserModel struct {
@@ -40,14 +41,15 @@ type (
 	}
 
 	User struct {
+		Id        int64     `db:"id"`
+		Mail      string    `db:"mail"`   // 邮箱
+		Gender    string    `db:"gender"` // 男｜女｜未公开
 		CreatedAt time.Time `db:"created_at"`
 		UpdatedAt time.Time `db:"updated_at"`
-		Id        int64     `db:"id"`
-		Username  string    `db:"username"` // 用户名
-		Nickname  string    `db:"nickname"` // 用户昵称
-		Password  string    `db:"password"` // 用户密码
-		Mail      string    `db:"mail"`     // 邮箱
-		Gender    string    `db:"gender"`   // 男｜女｜未公开
+		Username  string    `db:"username"`   // 用户名
+		Nickname  string    `db:"nickname"`   // 用户昵称
+		Password  string    `db:"password"`   // 用户密码
+		OtpSecret string    `db:"otp_secret"` // otp密钥
 	}
 )
 
@@ -62,8 +64,8 @@ func (m *defaultUserModel) Insert(data User) (sql.Result, error) {
 	userMailKey := fmt.Sprintf("%s%v", cacheUserMailPrefix, data.Mail)
 	userUsernameKey := fmt.Sprintf("%s%v", cacheUserUsernamePrefix, data.Username)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
-		return conn.Exec(query, data.CreatedAt, data.UpdatedAt, data.Username, data.Nickname, data.Password, data.Mail, data.Gender)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
+		return conn.Exec(query, data.Mail, data.Gender, data.CreatedAt, data.UpdatedAt, data.Username, data.Nickname, data.Password, data.OtpSecret)
 	}, userMailKey, userUsernameKey)
 	return ret, err
 }
@@ -131,8 +133,8 @@ func (m *defaultUserModel) Update(data User) error {
 	userUsernameKey := fmt.Sprintf("%s%v", cacheUserUsernamePrefix, data.Username)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userRowsWithPlaceHolder)
-		return conn.Exec(query, data.CreatedAt, data.UpdatedAt, data.Username, data.Nickname, data.Password, data.Mail, data.Gender, data.Id)
-	}, userIdKey, userMailKey, userUsernameKey)
+		return conn.Exec(query, data.Mail, data.Gender, data.CreatedAt, data.UpdatedAt, data.Username, data.Nickname, data.Password, data.OtpSecret, data.Id)
+	}, userUsernameKey, userIdKey, userMailKey)
 	return err
 }
 
@@ -159,4 +161,21 @@ func (m *defaultUserModel) formatPrimary(primary interface{}) string {
 func (m *defaultUserModel) queryPrimary(conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", userRows, m.table)
 	return conn.QueryRow(v, query, primary)
+}
+
+// 设置otp密钥
+func (m *defaultUserModel) SaveOtpSecret(id int64, secret string) error {
+	data, err := m.FindOne(id)
+	if err != nil {
+		return err
+	}
+
+	userIdKey := fmt.Sprintf("%s%v", cacheUserIdPrefix, id)
+	userMailKey := fmt.Sprintf("%s%v", cacheUserMailPrefix, data.Mail)
+	userUsernameKey := fmt.Sprintf("%s%v", cacheUserUsernamePrefix, data.Username)
+	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set `secret` = ? where `id` = ?", m.table)
+		return conn.Exec(query, secret, id)
+	}, userIdKey, userMailKey, userUsernameKey)
+	return err
 }

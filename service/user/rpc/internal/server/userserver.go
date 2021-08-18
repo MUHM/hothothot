@@ -35,3 +35,8 @@ func (s *UserServer) GetUserByMail(ctx context.Context, in *user.MailReq) (*user
 	l := logic.NewGetUserByMailLogic(ctx, s.svcCtx)
 	return l.GetUserByMail(in)
 }
+
+func (s *UserServer) SaveOtpSecret(ctx context.Context, in *user.OtpReq) (*user.OtpReply, error) {
+	l := logic.NewSaveOtpSecretLogic(ctx, s.svcCtx)
+	return l.SaveOtpSecret(in)
+}

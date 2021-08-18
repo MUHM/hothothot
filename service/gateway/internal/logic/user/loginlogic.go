@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"hothothot/common/errorx"
+	"hothothot/common/tools/captcha"
 	baseTypes "hothothot/common/types"
 	"hothothot/service/gateway/internal/svc"
 	"hothothot/service/gateway/internal/types"
@@ -33,6 +34,10 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 }
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.LoginResp, error) {
+	captchaRes := captcha.VerifyString(req.CaptchaId, req.Captcha)
+	if !captchaRes {
+		return nil, errorx.NewDefaultError("验证码错误")
+	}
 	userInfo, err := l.svcCtx.UserRpc.GetUserByName(l.ctx, &userclient.NameReq{Name: req.Username})
 	passwordSetting, _ := l.svcCtx.SystemRpc.GetByName(l.ctx, &systemclient.NameReq{Name: "password"})
 	var passwordConfig baseTypes.PasswordConfig

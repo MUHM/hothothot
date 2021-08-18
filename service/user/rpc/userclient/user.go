@@ -14,15 +14,18 @@ import (
 )
 
 type (
+	OtpReply      = user.OtpReply
 	IdReq         = user.IdReq
 	NameReq       = user.NameReq
 	MailReq       = user.MailReq
 	UserInfoReply = user.UserInfoReply
+	OtpReq        = user.OtpReq
 
 	User interface {
 		GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error)
 		GetUserByName(ctx context.Context, in *NameReq) (*UserInfoReply, error)
 		GetUserByMail(ctx context.Context, in *MailReq) (*UserInfoReply, error)
+		SaveOtpSecret(ctx context.Context, in *OtpReq) (*OtpReply, error)
 	}
 
 	defaultUser struct {
@@ -49,4 +52,9 @@ func (m *defaultUser) GetUserByName(ctx context.Context, in *NameReq) (*UserInfo
 func (m *defaultUser) GetUserByMail(ctx context.Context, in *MailReq) (*UserInfoReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetUserByMail(ctx, in)
+}
+
+func (m *defaultUser) SaveOtpSecret(ctx context.Context, in *OtpReq) (*OtpReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.SaveOtpSecret(ctx, in)
 }

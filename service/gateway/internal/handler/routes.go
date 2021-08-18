@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	captcha "hothothot/service/gateway/internal/handler/captcha"
 	password "hothothot/service/gateway/internal/handler/password"
 	user "hothothot/service/gateway/internal/handler/user"
 	"hothothot/service/gateway/internal/svc"
@@ -51,5 +52,15 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/api/captcha",
+				Handler: captcha.CaptchaHandler(serverCtx),
+			},
+		},
 	)
 }

@@ -21,10 +21,21 @@ message UserInfoReply{
   string gender = 4;
   string mail =5;
   string password =6;
+  string otpSecret =7;
+}
+
+message OtpReq{
+  int64 id = 1;
+  string secret = 2;
+}
+
+message OtpReply{
+  string pong = 1;
 }
 
 service user {
   rpc getUserById(IdReq) returns(UserInfoReply);
   rpc getUserByName(NameReq) returns(UserInfoReply);
   rpc getUserByMail(MailReq) returns(UserInfoReply);
+  rpc saveOtpSecret(OtpReq) returns(OtpReply);
 }

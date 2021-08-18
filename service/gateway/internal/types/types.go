@@ -50,3 +50,11 @@ type PwdChangeResp struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
+
+type CaptchaReq struct {
+}
+
+type CaptchaResp struct {
+	CaptchaId     string `json:"captchaId"`
+	CaptchaBase64 string `json:"captchaBase64"`
+}

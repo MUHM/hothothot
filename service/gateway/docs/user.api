@@ -1,7 +1,7 @@
 type (
 	LoginReq {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username  string `json:"username"`
+		Password  string `json:"password"`
 		Captcha   string `json:"captcha"`
 		CaptchaId string `json:"captchaId"`
 	}
@@ -43,9 +43,18 @@ type (
 		NewPassword     string `json:"newPassword"`
 		ComparePassword string `json:"comparePassword"`
 	}
+
 	PwdChangeResp {
 		Code    int    `json:"code"`
 		Message string `json:"message"`
+	}
+
+	CaptchaReq {
+	}
+
+	CaptchaResp {
+		CaptchaId     string `json:"captchaId"`
+		CaptchaBase64 string `json:"captchaBase64"`
 	}
 )
 
@@ -81,4 +90,12 @@ service gateway {
 service gateway {
 	@handler change
 	post /api/password/change (PwdChangeReq) returns (PwdChangeResp)
+}
+
+@server(
+	group: captcha
+)
+service gateway {
+	@handler captcha
+	get /api/captcha (CaptchaReq) returns (CaptchaResp)
 }
