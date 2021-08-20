@@ -5,7 +5,7 @@ CREATE TABLE `user`  (
   `password` varchar(255) NOT NULL DEFAULT '' COMMENT '用户密码',
   `mail` varchar(255) NOT NULL COMMENT '邮箱',
   `gender` char(5) NOT NULL COMMENT '男｜女｜未公开',
-  `otp_secret` varchar(255) NULL COMMENT 'otp密钥',
+  `otp_secret` varchar(255) NOT NULL DEFAULT '' COMMENT 'otp密钥',
 	`created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,

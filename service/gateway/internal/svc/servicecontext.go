@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"hothothot/common/tools/captcha"
 	"hothothot/service/gateway/internal/config"
 	"hothothot/service/gateway/internal/middleware"
 	"hothothot/service/system/rpc/systemclient"
@@ -15,6 +16,7 @@ type ServiceContext struct {
 	SystemRpc  systemclient.System
 	UserRpc    userclient.User
 	CasbinRbac rest.Middleware
+	Captcha    captcha.Captcha
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,5 +25,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SystemRpc:  systemclient.NewSystem(zrpc.MustNewClient(c.SystemRpc)),
 		UserRpc:    userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		CasbinRbac: middleware.NewCasbinRbacMiddleware(c.Mysql.DataSource).Handle,
+		Captcha:    captcha.NewCaptcha(c.CacheRedis),
 	}
 }

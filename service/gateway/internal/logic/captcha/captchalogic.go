@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 
-	"hothothot/common/tools/captcha"
 	"hothothot/service/gateway/internal/svc"
 	"hothothot/service/gateway/internal/types"
 
@@ -25,7 +24,7 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 }
 
 func (l *CaptchaLogic) Captcha(req types.CaptchaReq) (*types.CaptchaResp, error) {
-	captchaId, captchaBase64, err := captcha.RandomDigits(6)
+	captchaId, captchaBase64, err := l.svcCtx.Captcha.RandomDigits(6)
 	if err != nil {
 		return nil, err
 	}
