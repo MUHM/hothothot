@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	exclusiveCalls = syncx.NewSharedCalls()
-	stats          = cache.NewStat("captcha")
-	errorCaptcha   = errors.New("captcha: no rows in result set")
+	ExclusiveCalls = syncx.NewSharedCalls()
+	Stats          = cache.NewStat("captcha")
+	ErrorCaptcha   = errors.New("captcha: no rows in result set")
 
-	cachePrefix = "captcha"
-	cacheExpiry = 300 * time.Second
+	CachePrefix = "captcha"
+	CacheExpiry = 300 * time.Second
 )
 
 type (
@@ -35,14 +35,14 @@ type (
 
 func NewCaptcha(c cache.CacheConf) Captcha {
 	return &defaultCaptcha{
-		CacheRedis: cache.New(c, exclusiveCalls, stats, errorCaptcha, func(o *cache.Options) { o.Expiry = cacheExpiry }),
+		CacheRedis: cache.New(c, ExclusiveCalls, Stats, ErrorCaptcha, func(o *cache.Options) { o.Expiry = CacheExpiry }),
 	}
 }
 
 func (c *defaultCaptcha) RandomDigits(length int) (id, b64s string, err error) {
 	digits := captcha.RandomDigits(length)
 	id = uuid.New().String()
-	c.CacheRedis.SetWithExpire(fmt.Sprintf("%s:%s", cachePrefix, id), digits, cacheExpiry)
+	c.CacheRedis.SetWithExpire(fmt.Sprintf("%s:%s", CachePrefix, id), digits, CacheExpiry)
 	img := captcha.NewImage(id, digits, 136, 53)
 
 	writer := bytes.Buffer{}
@@ -53,7 +53,7 @@ func (c *defaultCaptcha) RandomDigits(length int) (id, b64s string, err error) {
 
 func (c *defaultCaptcha) VerifyString(captchaId string, digits string) bool {
 	var reald []byte
-	key := fmt.Sprintf("%s:%s", cachePrefix, captchaId)
+	key := fmt.Sprintf("%s:%s", CachePrefix, captchaId)
 	c.CacheRedis.Get(key, &reald)
 	c.CacheRedis.Del(key)
 	ns := make([]byte, len(digits))
