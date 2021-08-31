@@ -2,7 +2,7 @@ package wechat
 
 import (
 	"errors"
-	"hothothot/common/tools/jsonparse"
+	jsonparse "hothothot/common/tools/json"
 	"time"
 
 	"github.com/valyala/fasthttp"
@@ -25,10 +25,10 @@ func GetToken(corpid string, corpsecret string) (string, error) {
 	if httpRes.StatusCode() != 200 {
 		return "", errors.New("invalid statuscode")
 	}
-	tokenResponse := jsonparse.ParseJson(httpReq.Body())
+	tokenResponse := jsonparse.ParseJson(string(httpReq.Body()))
 	if tokenResponse["errcode"] != 0 {
 		return "", errors.New("invalid corpsecret")
 	}
 	accessToken := tokenResponse["access_token"].(string)
-	return accessToken
+	return accessToken, nil
 }
