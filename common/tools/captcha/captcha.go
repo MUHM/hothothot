@@ -42,7 +42,7 @@ func NewCaptcha(c cache.CacheConf) Captcha {
 func (c *defaultCaptcha) RandomDigits(length int) (id, b64s string, err error) {
 	digits := captcha.RandomDigits(length)
 	id = uuid.New().String()
-	c.CacheRedis.Set(fmt.Sprintf("%s:%s", cachePrefix, id), digits)
+	c.CacheRedis.SetWithExpire(fmt.Sprintf("%s:%s", cachePrefix, id), digits, cacheExpiry)
 	img := captcha.NewImage(id, digits, 136, 53)
 
 	writer := bytes.Buffer{}
