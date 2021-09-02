@@ -1,9 +1,11 @@
 package wechat
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	jsonparse "hothothot/common/tools/json"
+	wechatTypes "hothothot/common/types/wechat"
 	"time"
 
 	"github.com/tal-tech/go-zero/core/stores/cache"
@@ -68,15 +70,45 @@ func (c *defaultWechatWork) GetToken() (string, error) {
 	if httpRes.StatusCode() != 200 {
 		return "", errors.New("invalid statuscode")
 	}
-	tokenResponse := jsonparse.ParseJson(string(httpReq.Body()))
-	if tokenResponse["errcode"] != 0 {
+	tokenResponse := jsonparse.ParseJson(string(httpRes.Body()))
+	if tokenResponse["errcode"].(float64) != 0 {
 		return "", errors.New("invalid corpsecret")
 	}
 	accessToken = tokenResponse[TokenKey].(string)
-	c.CacheRedis.SetWithExpire(fmt.Sprintf("%s:%s:%s", CachePrefix, TokenKey, corpId), accessToken, tokenResponse["expires_in"].(time.Duration)*time.Second)
+	c.CacheRedis.SetWithExpire(fmt.Sprintf("%s:%s:%s", CachePrefix, TokenKey, corpId), accessToken, time.Duration(tokenResponse["expires_in"].(float64))*time.Second)
 	return accessToken, nil
 }
 
 func (c *defaultWechatWork) SendText(text string) {
-	// accessToken, _ := c.GetToken()
+	postData := &wechatTypes.WechatJsonData{
+		ToUser:                 "@all",
+		AgentId:                c.WorkConf.AgentId,
+		MsgType:                "text",
+		DuplicateCheckInterval: 600,
+	}
+	postData.Text.Content = text
+	accessToken, _ := c.GetToken()
+	c.PostMsg(*postData, fmt.Sprintf(SendMessageApi, accessToken))
+}
+
+func (c *defaultWechatWork) PostMsg(postData wechatTypes.WechatJsonData, url string) (string, error) {
+	client := fasthttp.Client{}
+	httpReq := fasthttp.AcquireRequest()
+	httpRes := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseRequest(httpReq)
+	defer fasthttp.ReleaseResponse(httpRes)
+	httpReq.Header.SetContentType("application/json")
+	httpReq.Header.SetMethod("POST")
+	httpReq.SetRequestURI(url)
+	postJson, _ := json.Marshal(postData)
+	requestBody := []byte(postJson)
+	httpReq.SetBody(requestBody)
+	if err := client.DoTimeout(httpReq, httpRes, 30*time.Second); err != nil {
+		return "", errors.New("请求超时")
+	}
+	if httpRes.StatusCode() != 200 {
+		return "", errors.New("invalid statuscode")
+	}
+	res := string(httpRes.Body())
+	return res, nil
 }

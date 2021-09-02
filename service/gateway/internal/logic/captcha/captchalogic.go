@@ -28,6 +28,7 @@ func (l *CaptchaLogic) Captcha(req types.CaptchaReq) (*types.CaptchaResp, error)
 	if err != nil {
 		return nil, err
 	}
+
 	return &types.CaptchaResp{
 		CaptchaId:     captchaId,
 		CaptchaBase64: captchaBase64,
